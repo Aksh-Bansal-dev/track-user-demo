@@ -1,0 +1,77 @@
+<html>
+<body style="height: 90vh;background: pink; font-family: sans-serif">
+    <h1>EXAM</h1>
+    <p>Q1. this is quesion(Check console for more info)</p>
+    <center>
+        <h2>FOCUS:&emsp;&emsp; <span id="res-focus">True</span></h2>
+        <h2>TAB CHANGE:&emsp;&emsp; <span id="res-visible">False</span></h2>
+        <h2>MouseX:&emsp;&emsp; <span id="res-mousex">NULL</span></h2>
+        <h2>MouseY:&emsp;&emsp; <span id="res-mousey">NULL</span></h2>
+    </center>
+    <br>
+    <br>
+    <br>
+    <button id="vid-btn">video/mic</button>
+    <div id="vid-con"></div>
+    <script>
+        const print = (text, elem, con=true)=>{
+            const res = document.getElementById("res-"+elem); 
+            if(res)
+                res.textContent = text;
+            if(con)
+                console.log(elem+" = "+text);
+        }
+        const mousePos = (e)=>{
+            print(e.pageX, "mousex", false);
+            print(e.pageY, "mousey", false);
+        }
+        window.onfocus = ()=>print("True","focus");
+        window.onblur = ()=>print("False","focus");
+        document.addEventListener(
+            "visibilitychange", ()=>print("True", "visible")
+        );
+        document.addEventListener("mousemove", (e)=>{
+            mousePos(e);
+        });
+        const testVideo = ()=>{
+            var video = document.createElement('video');
+            video.setAttribute('playsinline', '');
+            video.setAttribute('autoplay', '');
+            video.setAttribute('muted', 'true');
+            video.style.width = '200px';
+            video.style.height = '200px';
+            
+            /* Setting up the constraint */
+            var facingMode = "user"; // Can be 'user' or 'environment' to access back or front camera (NEAT!)
+            var constraints = {
+              audio: true,
+              video: {
+               facingMode: facingMode
+              }
+            };
+            
+            /* Stream it to video element */
+            navigator.mediaDevices.getUserMedia(constraints)
+            .then(function success(stream) {
+                video.srcObject = stream;
+            })
+            .catch((err)=>{
+                console.log(err);
+                alert("Camera not found");
+            });
+            document.getElementById("vid-con").appendChild(video);
+        }
+
+        const btn = document.getElementById("vid-btn");
+        btn.addEventListener("click", ()=>{
+            const vid = document.getElementsByTagName("video")[0];
+            if(vid){
+                vid.remove(); 
+            }
+            else{
+                testVideo();
+            }
+        });
+    </script>
+</body>
+</html>
